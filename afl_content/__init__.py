@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from itertools import zip_longest
 from urllib.parse import urljoin
+from dataclasses import dataclass
 
 #Global Variable
 BASE_URL = 'https://afltables.com/afl/'
@@ -15,6 +16,31 @@ def grouper(iterable, n = 2, fillvalue=None):
     return list(zip_longest(*args, fillvalue=fillvalue))
 
 
+class Team:
+    def __init__(self):
+        pass
+
+class Match:
+    def __init__(self):
+        pass
+
+class TeamInMatch:
+    @dataclass(frozen=True)
+    class TeamStats:
+        pass
+
+    def __init__(self):
+        pass
+
+class Round:
+    def __init__(self):
+        pass
+
+class Ladder:
+    def __init__(self):
+        pass
+
+        
 class Scraper:
     """
     Static class that can scrape HTML from AFL Tables web pages.
@@ -51,7 +77,7 @@ class Scraper:
 
         regular_season = grouper(tables)
 
-        print()
+        print(regular_season)
 
     @classmethod
     def scrape_match (cls, year:int, match: str):
@@ -62,3 +88,4 @@ class Scraper:
         url =  cls.url(f'stats/games/{year}/{match}.html')
         html = requests.get(url).text
         soup = BeautifulSoup(html)
+
