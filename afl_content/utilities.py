@@ -3,6 +3,7 @@ import requests
 from itertools import zip_longest
 from urllib.parse import urljoin
 from dataclasses import dataclass
+from abc import ABC, abstractmethod
 
 #Global Variable
 BASE_URL = 'https://afltables.com/afl/'
@@ -14,52 +15,26 @@ def grouper(iterable, n = 2, fillvalue=None):
 
     args = [iter(iterable)] * n
     return list(zip_longest(*args, fillvalue=fillvalue))
-
-
-class Team:
-    def __init__(self):
-        pass
-
-class Match:
-    def __init__(self):
-        pass
-
-class TeamInMatch:
-    @dataclass(frozen=True)
-    class TeamStats:
-        pass
-
-    def __init__(self):
-        pass
-
-class Round:
-    def __init__(self):
-        pass
-
-class Ladder:
-    def __init__(self):
-        pass
-
-        
+   
 class Scraper:
     """
     Static class that can scrape HTML from AFL Tables web pages.
     """
 
     @staticmethod
-    def url(content_url):
+    def _url(content_url):
         """
         Returns the AFL Tables URL for the desired content page
         """
         return urljoin(BASE_URL, content_url)
     
     @classmethod
-    def scrape_season(cls, year: int):
+    def scrape_season(cls, year: int) -> list:
         """
         Scrapes web pages designated as a season
         """
 
-        url =  cls.url(f'seas/{year}.html')
+        url =  cls._url(f'seas/{year}.html')
         html = requests.get(url).text
         soup = BeautifulSoup(html)
 
@@ -77,7 +52,7 @@ class Scraper:
 
         regular_season = grouper(tables)
 
-        print(regular_season)
+        return regular_season
 
     @classmethod
     def scrape_match (cls, year:int, match: str):
@@ -85,7 +60,26 @@ class Scraper:
         Scrapes web pages designated as a match
         """
         
-        url =  cls.url(f'stats/games/{year}/{match}.html')
+        url =  cls._url(f'stats/games/{year}/{match}.html')
         html = requests.get(url).text
         soup = BeautifulSoup(html)
 
+
+class ParserInterface(ABC):
+
+    @staticmethod
+    @abstractmethod
+    def parse(self, content: list) -> dict:
+        pass
+
+class RoundParser(ParserInterface):
+
+    @staticmethod
+    def parse(self, content: list) -> dict:
+        pass
+
+class MatchParser(ParserInterface):
+
+    @staticmethod
+    def parse(self, content: list) -> dict:
+        pass 
