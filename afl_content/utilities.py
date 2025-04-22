@@ -2,9 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 from itertools import zip_longest
 from urllib.parse import urljoin
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
-import re
 
 #Global Variable
 BASE_URL = 'https://afltables.com/afl/'
@@ -67,6 +65,9 @@ class Scraper:
 
 
 class ParserInterface(ABC):
+    """
+    Interface for data parsers
+    """
 
     @staticmethod
     @abstractmethod
@@ -74,9 +75,17 @@ class ParserInterface(ABC):
         pass
 
 class RoundParser(ParserInterface):
+    """
+    Class that implemented the ParserInterface
+    """
 
     @staticmethod
     def parse(content: tuple) -> list[dict]:
+        """
+        Parser method for converting HTML soup into structured data for AFL season rounds
+        """
+
+        #Needs to work for rounds that haven't happened yet (i.e, future fixtures)
 
         header_content = content[0].find_all("td")
 
@@ -99,7 +108,8 @@ class RoundParser(ParserInterface):
             'score': '',
             'venue': '',
             'date_time': '',
-            'id': ''
+            'id': '',
+            'attendance': ''
         }
             
             #Allows retrieval of a match's teamnames, venue, and unique id
@@ -112,7 +122,7 @@ class RoundParser(ParserInterface):
             
             #empty table (not a match)
             elif len(match_data) == 0:
-                pass
+                continue
 
             #Completed Match
             else:
@@ -159,7 +169,15 @@ class RoundParser(ParserInterface):
         return round_content
 
 class MatchParser(ParserInterface):
+    """
+    Class that implemented the ParserInterface
+    """
+
 
     @staticmethod
     def parse(content: list) -> list[dict]:
+        """
+        Parser method for converting HTML soup into structured data for AFL season matches
+        """
+
         pass 
